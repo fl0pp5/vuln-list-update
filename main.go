@@ -13,6 +13,7 @@ import (
 	"github.com/aquasecurity/vuln-list-update/alma"
 	"github.com/aquasecurity/vuln-list-update/alpine"
 	alpineunfixed "github.com/aquasecurity/vuln-list-update/alpine-unfixed"
+	"github.com/aquasecurity/vuln-list-update/alt"
 	"github.com/aquasecurity/vuln-list-update/amazon"
 	arch_linux "github.com/aquasecurity/vuln-list-update/arch"
 	"github.com/aquasecurity/vuln-list-update/chainguard"
@@ -38,7 +39,7 @@ import (
 
 var (
 	target = flag.String("target", "", "update target (nvd, alpine, alpine-unfixed, redhat, redhat-oval, "+
-		"debian, ubuntu, amazon, oracle-oval, suse-cvrf, photon, arch-linux, ghsa, glad, cwe, osv, mariner, kevc, wolfi, chainguard, k8s)")
+		"debian, ubuntu, amazon, oracle-oval, suse-cvrf, photon, arch-linux, ghsa, glad, cwe, osv, mariner, kevc, wolfi, chainguard, k8s, alt)")
 	vulnListDir  = flag.String("vuln-list-dir", "", "vuln-list dir")
 	targetUri    = flag.String("target-uri", "", "alternative repository URI (only glad)")
 	targetBranch = flag.String("target-branch", "", "alternative repository branch (only glad)")
@@ -175,6 +176,11 @@ func run() error {
 		ku := k8s.NewUpdater()
 		if err := ku.Update(); err != nil {
 			return xerrors.Errorf("k8s update error: %w", err)
+		}
+	case "alt":
+		alt := alt.NewConfig()
+		if err := alt.Update(); err != nil {
+			return xerrors.Errorf("ALT update error: %w", err)
 		}
 	default:
 		return xerrors.New("unknown target")
